@@ -15,6 +15,8 @@ const App = () => {
 
   const [error, setError] = useState(null);
 
+  const [selectedButton, setSelectedButton] = useState("all");
+
 
   useEffect(() => {
     // Call the API when the component mounts
@@ -44,6 +46,7 @@ const App = () => {
 
   }, []);
 
+  // Search bar method in navbar
   const searchFood = (e) => {
     const searchValue = e.target.value;
 
@@ -56,6 +59,28 @@ const App = () => {
 
     setFilteredData(filter);
   }
+
+  //Filter food with buttons click
+  const filterFood = (type) => {
+
+    if (type == "all") {
+      setFilteredData(data);
+      setSelectedButton("all");
+      return;
+    }
+
+    const filter = data?.filter((food) => food.type.toLowerCase().includes(type.toLowerCase()));
+    setFilteredData(filter);
+    setSelectedButton(type);
+  }
+
+  const filterButtons = [
+    { name: 'All', type: 'all' },
+    { name: 'Breakfast', type: 'breakfast' },
+    { name: 'Snack', type: 'snack' },
+    { name: 'Lunch', type: 'lunch' },
+    { name: 'Dessert', type: 'dessert' }
+  ]
 
 
   if (error) return <di>{error}</di>;
@@ -86,11 +111,14 @@ const App = () => {
 
       </MainContainer>
       <FilterContainer>
-        <Button>All</Button>
-        <Button>Breakfast</Button>
-        <Button>Snack</Button>
-        <Button>Lunch</Button>
-        <Button>Dessert</Button>
+        {
+          filterButtons.map((value) => (
+            <Button key={value.name} onClick={() => filterFood(value.type)}>
+              {value.name}
+            </Button>
+          ))
+        }
+
       </FilterContainer>
 
       <SearchResult data={filteredData} />
@@ -107,11 +135,13 @@ export const Button = styled.button`
   padding:10px 25px;
   border-radius:9px;
   font-size:18px;
+  width:150px;
   background-color:#fca103;
   color:#fff;
   border:none;
   cursor: pointer;
   transition:0.6 ease-in-out;
+  margin:10px;
 
   &:hover{
     background-color:#c77f04;
@@ -129,15 +159,17 @@ const MainContainer = styled.div`
   flex-direction:column;
   
   height:700px;
+ 
 
   .text_bg{
     height:400px;
-    width:500px;
+    /* width:500px; */
     display:flex;
     flex-direction:column;
     justify-content:center;
     padding:100px;
     gap:20px;
+    
 
     p{
       color:#fff;
@@ -148,6 +180,20 @@ const MainContainer = styled.div`
     h2{
       font-size:3rem;
       color:#fff;
+    }
+    @media screen and (max-width: 800px) {
+        h2{
+          font-size:2.2rem;
+        }
+        p{
+          width:300px;
+        }
+    }
+    @media screen and (max-width:600px){
+
+      
+        padding:100px 15px;
+      
     }
     
   
@@ -187,12 +233,45 @@ const TopSection = styled.section`
   color: #f9f9f9;
   cursor:pointer;
 }
+
+@media screen and (0< width< 1000px) {
+
+  flex-direction:column;
+  gap:20px;
+
+  .navbar ul li{
+    padding:12px 20px;
+  }
+}
+@media screen and (max-width:550px) {
+
+
+.navbar ul li{
+  padding:12px 10px;
+  font-size:15px;
+}
+}
+@media screen and (max-width:390px) {
+
+
+.navbar ul li{
+  padding:12px 10px;
+  font-size:12px;
+}
+}
+
 `;
 
 const FilterContainer = styled.section`
 padding:40px 0;
 display:flex;
 justify-content:space-evenly;
+
+@media screen and (max-width: 1200px) {
+  padding:40px 40px;
+  margin:auto;
+  flex-wrap: wrap;
+}
 `;
 
 
