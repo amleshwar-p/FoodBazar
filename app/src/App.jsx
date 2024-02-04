@@ -9,12 +9,11 @@ const App = () => {
 
   const [data, setData] = useState(null);
 
+  const [filteredData, setFilteredData] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState(null);
-
-  
-
 
 
   useEffect(() => {
@@ -30,6 +29,7 @@ const App = () => {
 
 
         setData(json);
+        setFilteredData(json);
         setLoading(false);
 
       } catch (error) {
@@ -44,8 +44,18 @@ const App = () => {
 
   }, []);
 
+  const searchFood = (e) => {
+    const searchValue = e.target.value;
 
-  //  
+    console.log(searchValue);
+
+    if (searchValue == "") {
+      setFilteredData(null);
+    }
+    const filter = data?.filter((food) => food.name.toLowerCase().includes(searchValue.toLowerCase()));
+
+    setFilteredData(filter);
+  }
 
 
   if (error) return <di>{error}</di>;
@@ -65,7 +75,7 @@ const App = () => {
             </ul>
           </div>
           <div className="search">
-            <input placeholder="Searc food ..." />
+            <input onChange={searchFood} placeholder="Searc food ..." />
           </div>
         </TopSection>
         <div className="text_bg">
@@ -83,7 +93,7 @@ const App = () => {
         <Button>Dessert</Button>
       </FilterContainer>
 
-      <SearchResult data={data} />
+      <SearchResult data={filteredData} />
 
     </Container>
   );
